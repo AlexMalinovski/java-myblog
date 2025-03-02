@@ -12,7 +12,6 @@
     <!-- Имя и класс основного сервлета приложения-->
     <servlet-name>dispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-
     <!-- Настройка Spring-контекста и Java-конфигурации -->
     <init-param>
       <param-name>contextClass</param-name>
@@ -23,6 +22,12 @@
       <param-value>ru.practicum.myblog.configs.WebConfig</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
+    <multipart-config>
+      <location>/tmp</location>
+      <max-file-size>20848820</max-file-size>
+      <max-request-size>418018841</max-request-size>
+      <file-size-threshold>1048576</file-size-threshold>
+    </multipart-config>
   </servlet>
 
   <!-- DispatcherServlet обрабатывает все запросы -->
