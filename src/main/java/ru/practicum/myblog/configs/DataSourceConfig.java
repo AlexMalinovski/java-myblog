@@ -80,7 +80,7 @@ public class DataSourceConfig {
             Tag tag1 = tagRepository.save(new Tag("tag1"));
             Tag tag2 = tagRepository.save(new Tag("tag2"));
 
-            var post1 = postRepository.save(Post.builder().title("title1").body("body1").build());
+            var post1 = postRepository.save(Post.builder().title("Заголовок").body("тело сообщения").build());
             var post2 = postRepository.save(Post.builder().title("title2").body("body2").build());
             var post3 = postRepository.save(Post.builder().title("title3").body("body3").build());
 

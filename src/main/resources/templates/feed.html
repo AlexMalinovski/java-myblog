@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Название страницы-->
+    <title>Лента</title>
+
+    <!-- Стили страницы -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .actions {
+            text-align: center;
+        }
+        .settings-section {
+        }
+        .tags-container {
+            margin-top: 20px;
+        }
+        .feed-section {
+        }
+        .post-container {
+            margin-top: 20px;
+        }
+        .post-container img {
+            height: auto;
+            width: auto;
+            max-width: 150px;
+            max-height: 150px;
+        }
+        .post-container p {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* number of lines to show */
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .post-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+        }
+        .post-tags {
+            padding: 0px;
+            margin: 0px;
+            color: gray;
+            list-style-type: none;
+        }
+        .post-tags li {
+            margin: 5px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .post-footer {
+            text-align: end;
+            padding: 15px 5px;
+        }
+        .post-footer span {
+            margin-left 5px;
+        }
+        .pagination-container {
+            margin-top: 20px;
+        }
+        .pagination {
+            display: inline;
+            padding: 3px;
+            margin: 3px
+        }
+        .active {
+            background-color: gray;
+	        color: white;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="number"], input[type="checkbox"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .btn-add {
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 15px;
+            text-decoration: none;
+            background-color: lightgray;
+            color: black;
+            border: none;
+            display: inline-block;
+        }
+        form > textarea {
+            display: block;
+            width: 100%;
+        }
+        .post-likes::before {
+            content: "\1F44D";
+        }
+        .post-comments::before {
+            content: "\1F5E9";
+        }
+    </style>
+</head>
+<body>
+<h1>Лента</h1>
+<div class="feed-section" id="feed">
+    <hr/>
+    <div>
+        <h3>Фильтры</h3>
+        <a th:href="@{/posts/filter/reset}">Очистить</a>
+        <form th:object="${postFilter}" th:action="@{/posts/filter}" method="POST" enctype="multipart/form-data">
+            <label for="tagName">Фильтрация по тегу:</label>
+            <select id="tagName" name="tagName">
+                <option value="" selected disabled hidden>Выберите</option>
+                <option th:each="tag : ${availableTags}" th:value="${tag}" th:text="${tag}" th:selected="${tag == postFilter.getTagName()}"></option>
+            </select>
+            <br>
+            <button type="submit">Применить</button>
+        </form>
+        <hr/>
+        <h3>Параметры отображения</h3>
+        <form action="posts">
+            <label for="pageSize">Постов на странице:</label>
+            <select name="pageSize" id="pageSize">
+                <option value="" selected disabled hidden>Выберите</option>
+                <option th:each="size : ${availableSizes}" th:value="${size}" th:text="${size}"></option>
+            </select>
+            <br><br>
+            <button type="submit">Применить</button>
+        </form>
+    </div>
+    <hr/>
+    <a class="btn" th:href="@{/posts/editor}" style="margin-top: 30px">Добавить пост</a>
+    <div class="post-container" th:each="feedRow : ${postPage.content}">
+<!--        <img th:src="${feedRow.postPreview.image}" alt="image">-->
+        <img th:src="'data:image/jpeg;base64,' + ${feedRow.postPreview.image}" alt="image">
+        <a th:href="@{/posts/{id}/(id = ${feedRow.postPreview.id})}" th:text="${feedRow.postPreview.title}" class="post-title"></a>
+        <p th:text="${feedRow.postPreview.shortBody}"></p>
+        <ul class="post-tags">
+            <li th:each="tag : ${feedRow.tags}" th:text="${tag}"></li>
+        </ul>
+        <div class="post-footer">
+            <span class="post-likes" th:text="${feedRow.numLikes}"></span>
+            <span class="post-comments" th:text="${feedRow.numComments}" style="margin-left: 10px;"></span>
+        </div>
+    </div>
+
+    <div class="pagination-container">
+        <div th:if="${postPage.totalPages > 0}" class="pagination"
+             th:each="pageNumber : ${pageNumbers}">
+            <a th:href="@{/posts(pageSize=${postPage.size}, pageNumber=${pageNumber})}"
+               th:text=${pageNumber}
+               th:class="${pageNumber==postPage.number + 1} ? active"></a>
+        </div>
+    </div>
+
+</div>
+<script>
+    function toggleNewPostForm() {
+        const form = document.getElementById('newPostForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+</body>
+</html>

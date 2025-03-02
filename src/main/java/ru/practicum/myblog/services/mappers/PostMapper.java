@@ -38,7 +38,7 @@ public interface PostMapper {
         if (body == null) {
             return null;
         }
-        return body; //TODO
+        return body.split("\\n")[0];
     }
 
     @Named("mapMultipartToBytes")
