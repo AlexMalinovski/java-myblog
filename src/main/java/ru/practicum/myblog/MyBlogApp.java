@@ -16,6 +16,7 @@ public class MyBlogApp {
     public static void main(String[] args) throws LifecycleException {
         Tomcat tomcat = new Tomcat();
         tomcat.getConnector().setPort(PORT);
+        tomcat.getConnector().setURIEncoding("UTF-8");
 
         Context tomcatContext = tomcat.addContext("", null);
 

@@ -24,14 +24,6 @@ import java.util.Optional;
 public class PostRepositoryImpl implements PostRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    @Override
-    public Optional<Post> findById(long postId) {
-        String sql = "select * from posts where id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makePost(rs), postId)
-                .stream()
-                .findAny();
-    }
-
     private Post makePost(ResultSet rs) throws SQLException {
         return Post.builder()
                 .id(rs.getLong("id"))
@@ -39,6 +31,38 @@ public class PostRepositoryImpl implements PostRepository {
                 .title(rs.getString("title"))
                 .image(rs.getBytes("image"))
                 .build();
+    }
+
+    private Post updateExistPost(Post post) {
+        String sql = "update posts set title=?, body=?, image=? where id=?";
+        jdbcTemplate.update(sql,
+                post.getTitle(),
+                post.getBody(),
+                post.getImage(),
+                post.getId());
+        return findById(post.getId()).orElseThrow();
+    }
+
+    private Post createNewPost(Post post) {
+        Map<String, Object> row = new HashMap<>();
+        row.put("title", post.getTitle());
+        row.put("body", post.getBody());
+        row.put("image", post.getImage());
+
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("posts")
+                .usingGeneratedKeyColumns("id");
+        final long id = simpleJdbcInsert.executeAndReturnKey(row).longValue();
+
+        return post.toBuilder().id(id).build();
+    }
+
+    @Override
+    public Optional<Post> findById(long postId) {
+        String sql = "select * from posts where id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makePost(rs), postId)
+                .stream()
+                .findAny();
     }
 
     @Override
@@ -60,34 +84,9 @@ public class PostRepositoryImpl implements PostRepository {
         return post.getId() == null ? createNewPost(post) : updateExistPost(post);
     }
 
-    private Post updateExistPost(Post post) {
-        String sql = "update posts set title=?, body=?, image=? where id=?";
-        jdbcTemplate.update(sql,
-                post.getTitle(),
-                post.getBody(),
-                post.getImage(),
-                post.getId());
-        return findById(post.getId()).orElseThrow();
-    }
-
-
     @Override
     public void removeById(long postId) {
         String sql = "delete from posts where id = ?";
         jdbcTemplate.update(sql, postId);
-    }
-
-    private Post createNewPost(Post post) {
-        Map<String, Object> row = new HashMap<>();
-        row.put("title", post.getTitle());
-        row.put("body", post.getBody());
-        row.put("image", post.getImage());
-
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("posts")
-                .usingGeneratedKeyColumns("id");
-        final long id = simpleJdbcInsert.executeAndReturnKey(row).longValue();
-
-        return post.toBuilder().id(id).build();
     }
 }

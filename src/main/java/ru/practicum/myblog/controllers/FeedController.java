@@ -43,7 +43,6 @@ public class FeedController {
         return DEFAULT_PAGE_SIZES;
     }
 
-
     @ModelAttribute("postFilter")
     public PostFilter getFilter() {
         return new PostFilter();
@@ -86,7 +85,7 @@ public class FeedController {
     public String editPost(@RequestParam(name = "id", required = false) Long id, Model model) {
         PostEditDto postEdit = Optional.ofNullable(id)
                 .map(postService::getEditablePostById)
-                .orElse(Optional.of(postService.getEmpty()))
+                .orElseGet(() -> Optional.of(postService.getEmpty()))
                 .orElseThrow(() -> new NotFoundException(String.format("Пост с id=%d не найден", id)));
         model.addAttribute("editPost", postEdit);
         return "editor";

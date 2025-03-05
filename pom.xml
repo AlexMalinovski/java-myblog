@@ -14,11 +14,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <org.projectlombok.version>LATEST</org.projectlombok.version>
     <org.mapstruct.version>LATEST</org.mapstruct.version>
+    <com.fasterxml.jackson.version>2.17.3</com.fasterxml.jackson.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
   <dependencies>
-    <!--    Tomcat-->
+    <!--    -->
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-core</artifactId>
@@ -31,6 +32,24 @@
       <artifactId>spring-webmvc</artifactId>
       <version>6.2.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${com.fasterxml.jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${com.fasterxml.jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${com.fasterxml.jackson.version}</version>
+    </dependency>
+
     <!--********| Jakarta Validation  |********-->
     <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
     <dependency>

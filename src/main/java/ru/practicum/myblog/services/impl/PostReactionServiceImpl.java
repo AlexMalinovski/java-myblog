@@ -17,7 +17,7 @@ public class PostReactionServiceImpl implements PostReactionService {
     private final PostReactionRepository reactionRepository;
     @Override
     public void addLike(long postId) {
-        Long userId = ThreadLocalRandom.current().nextLong(); //костыль
+        Long userId = ThreadLocalRandom.current().nextLong(); //костыль чтобы поставить много лайков
         PostReaction reaction = PostReaction.builder()
                 .postId(postId)
                 .userId(userId)
@@ -26,7 +26,7 @@ public class PostReactionServiceImpl implements PostReactionService {
         try {
             reactionRepository.createNewPostReaction(reaction);
         } catch (Exception ex) {
-            /* Ничего. Убрать вместе с костылём выше */
+            /* Ничего. Если совпали сгенерированные костылём ID. Убрать вместе с костылём */
         }
     }
 

@@ -3,7 +3,6 @@ package ru.practicum.myblog.services.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 import ru.practicum.myblog.data.Post;
 import ru.practicum.myblog.dto.postfeed.FeedRowDto;
@@ -15,16 +14,8 @@ import ru.practicum.myblog.exceptoins.BadRequestException;
 import java.io.IOException;
 import java.util.Base64;
 
-@Mapper(config = DefaultMapperConfig.class, uses = {TagMapper.class})
+@Mapper(config = DefaultMapperConfig.class, uses = {TagMapper.class, CommentMapper.class})
 public interface PostMapper {
-    @Named("mapImageBytesToResource")
-    default ByteArrayResource mapImageBytesToResource(byte[] image) {
-        if (image == null) {
-            return null;
-        }
-        return new ByteArrayResource(image);
-    }
-
     @Named("mapImageBytesToBase64")
     default String mapImageBytesToBase64(byte[] image) {
         if (image == null) {

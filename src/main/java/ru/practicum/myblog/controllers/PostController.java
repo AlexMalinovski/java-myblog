@@ -59,7 +59,7 @@ public class PostController {
     @PostMapping(path = BlogUrls.Posts.PostId.Comments.Edit.FULL, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public String editPostComment(
             @ModelAttribute(name = "editedComment") @Valid NewCommentDto editedComment, BindingResult result,
-            @PathVariable(name = "postId") long postId, Model model) {
+            @PathVariable(name = "postId") long postId) {
         if (result.hasErrors()) {
             throw new BadRequestException("Недопустимый комментарий");
         }

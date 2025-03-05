@@ -18,7 +18,7 @@ public interface TagMapper {
                 .map(String::trim)
                 .filter(str -> !str.isEmpty())
                 .map(String::toLowerCase)
-                .map(str -> new Tag(name))
+                .map(Tag::new)
                 .orElse(null);
     }
 
