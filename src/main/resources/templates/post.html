@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Название страницы-->
+    <title>Лента</title>
+
+    <!-- Стили страницы -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .actions {
+            text-align: center;
+        }
+        .settings-section {
+        }
+        .tags-container {
+            margin-top: 20px;
+        }
+        .feed-section {
+        }
+        .post-container {
+            margin-top: 20px;
+        }
+        .post-container img {
+            height: auto;
+            width: auto;
+            max-width: 150px;
+            max-height: 150px;
+        }
+        .post-container p {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* number of lines to show */
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .post-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+        }
+        .post-tags {
+            padding: 0px;
+            margin: 0px;
+            color: gray;
+            list-style-type: none;
+        }
+        .post-tags li {
+            margin: 5px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .post-comments-container {
+            margin-top: 20px;
+        }
+        .post-comment {
+            padding: 10px 0;
+        }
+        .post-footer {
+            text-align: end;
+            padding: 15px 5px;
+        }
+        .post-footer span {
+            margin-left 5px;
+        }
+        .pagination-container {
+            margin-top: 20px;
+        }
+        .pagination {
+            display: inline;
+            padding: 3px;
+            margin: 3px
+        }
+        .active {
+            background-color: gray;
+	        color: white;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="number"], input[type="checkbox"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .btn-add {
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 15px;
+            text-decoration: none;
+            background-color: lightgray;
+            color: #fff;
+            border: none;
+        }
+        .post-likes {
+            text-decoration: none;
+        }
+        form > textarea {
+            display: block;
+            width: 100%;
+        }
+        .validationError {
+            color: red;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="post-container">
+<!--    <img th:src="${selectedPost.image}" alt="image">-->
+    <img th:src="'data:image/jpeg;base64,' + ${selectedPost.image}" alt="image">
+    <p th:text="${selectedPost.title}" class="post-title"></p>
+    <p th:text="${selectedPost.body}"></p>
+    <ul class="post-tags">
+        <li th:each="tag : ${selectedPost.tags}" th:text="${tag}"></li>
+    </ul>
+    <div class="post-footer">
+        <a class="btn" th:href="@{/posts/editor?id={postId}(postId=${selectedPost.id})}">Редактировать</a>
+        <a class="btn" th:href="@{./delete}">Удалить</a>
+        <a class="post-likes" th:href="@{./like}">&#128077;<span th:text="${selectedPost.numLikes}"></span></a>
+    </div>
+    <h3>Комментарии</h3>
+    <form th:object="${newComment}" th:action="@{/posts/{postId}/comments(postId=${selectedPost.id})}" method="POST" enctype="multipart/form-data">
+        <label for="newCommentBody">Новый комментарий</label>
+        <input type="text" id="newCommentBody" name="body" th:field="*{body}">
+        <span class="validationError" th:if="${#fields.hasErrors('body')}" th:errors="*{body}"></span>
+        <button type="submit">Добавить</button>
+    </form>
+    <div class="post-comments-container">
+        <div class="post-comment" th:each="comment : ${selectedPost.comments}" th:text="${comment.body}" th:id="${comment.id}" th:onclick="onCommentClick(this.getAttribute('id'));"></div>
+    </div>
+</div>
+<script>
+    function onCommentClick(id) {
+        let oldEditor = document.getElementById('commentEditor');
+        if (oldEditor != null) {
+            return;
+        }
+        let elem = document.getElementById(id);
+        elem.hidden = true;
+
+        let editor = createCommentEditor(id, elem.innerHTML);
+        elem.after(editor);
+    }
+
+    function createCommentEditor(commentId, currentBody) {
+        let form = document.createElement('form');
+        form.id = 'commentEditor';
+        form.action='./comments/edit';
+        form.method='POST';
+        form.enctype='multipart/form-data';
+
+        let bodyTextArea = document.createElement('textarea');
+        bodyTextArea.name='body';
+        bodyTextArea.rows="4";
+        bodyTextArea.append(currentBody);
+        form.append(bodyTextArea);
+
+        let idInput = document.createElement('input');
+        idInput.name='id';
+        idInput.hidden = true;
+        idInput.value=commentId;
+        form.append(idInput);
+
+        bodyTextArea.addEventListener('keydown', function(event) {
+          if (event.code == 'Enter' && (event.ctrlKey || event.metaKey)) {
+              form.submit();
+          }
+        });
+
+        return form;
+    }
+</script>
+</body>
+</html>

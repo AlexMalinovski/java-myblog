@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лента</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .actions {
+            text-align: center;
+        }
+        .settings-section {
+        }
+        .tags-container {
+            margin-top: 20px;
+        }
+        .feed-section {
+        }
+        .post-container {
+            margin-top: 20px;
+        }
+        .post-container img {
+            height: auto;
+            width: auto;
+            max-width: 150px;
+            max-height: 150px;
+        }
+        .post-container p {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* number of lines to show */
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .post-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+        }
+        .post-tags {
+            padding: 5px;
+        }
+        .post-footer {
+            text-align: end;
+            padding: 15px 5px;
+        }
+        .post-footer span {
+            margin-left 5px;
+        }
+        .pagination-container {
+            margin-top: 20px;
+        }
+        .pagination {
+            display: inline;
+            padding: 3px;
+            margin: 3px
+        }
+        .active {
+            background-color: gray;
+	        color: white;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="number"], input[type="checkbox"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .btn-add {
+            margin-bottom: 20px;
+        }
+        form > textarea {
+            display: block;
+            width: 100%;
+        }
+        .validationError {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container" id="editPostForm">
+        <h2>Редактор поста</h2>
+        <form th:object="${editPost}" method="POST" enctype="multipart/form-data"  accept-charset="utf-8">
+            <label for="editPostTitle">Название</label>
+            <input type="text" id="editPostTitle" name="title" th:field="*{title}"/>
+            <span class="validationError" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+
+            <label for="editPostBody">Текст</label>
+            <textarea id="editPostBody" name="body" rows="4" th:field="*{body}"></textarea>
+            <span class="validationError" th:if="${#fields.hasErrors('body')}" th:errors="*{body}"></span>
+
+            <label for="image">Установить изображение</label>
+            <input type="file" th:field="*{image}" id="image" accept="image/png, image/jpeg"/>
+
+            <div><span style="margin-right: 10px;">Теги</span><button type="button" onclick="addTag()">Добавить</button></div>
+            <fieldset id="editPostTags" >
+                <div th:each="tag, itemStat : *{tags}">
+                    <input type="text" th:field="*{tags[__${itemStat.index}__]}">
+                    <span class="validationError" th:if="${#fields.hasErrors('tags[__${itemStat.index}__]')}"
+                          th:errors="*{tags[__${itemStat.index}__]}"></span>
+                </div>
+            </fieldset>
+
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+    <script>
+        function addTag() {
+            let numTags = document.querySelectorAll('#editPostTags input').length;
+            let inputSet = document.getElementById('editPostTags');
+
+            let div = document.createElement('div');
+            let tagInput = document.createElement('input');
+            tagInput.type='text';
+            tagInput.id='tags' + numTags;
+            tagInput.name = 'tags[' + numTags + ']';
+            div.append(tagInput);
+            inputSet.append(div);
+        }
+    </script>
+</body>
+</html>
