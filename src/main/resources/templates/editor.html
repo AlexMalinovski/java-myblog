@@ -109,7 +109,7 @@
             <div><span style="margin-right: 10px;">Теги</span><button type="button" onclick="addTag()">Добавить</button></div>
             <fieldset id="editPostTags" >
                 <div th:each="tag, itemStat : *{tags}">
-                    <input type="text" th:field="*{tags[__${itemStat.index}__]}">
+                    <input type="text" th:name="tags" th:value="*{tags[__${itemStat.index}__]}">
                     <span class="validationError" th:if="${#fields.hasErrors('tags[__${itemStat.index}__]')}"
                           th:errors="*{tags[__${itemStat.index}__]}"></span>
                 </div>
@@ -127,7 +127,7 @@
             let tagInput = document.createElement('input');
             tagInput.type='text';
             tagInput.id='tags' + numTags;
-            tagInput.name = 'tags[' + numTags + ']';
+            tagInput.name = 'tags';
             div.append(tagInput);
             inputSet.append(div);
         }
