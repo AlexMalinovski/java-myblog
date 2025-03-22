@@ -2,7 +2,7 @@
 Приложение-блог
 
 ## Технологии и инструменты:
-Java 21, Spring (WebMvc, Validation), JDBC, H2, Maven, Lombok, MapStruct, JUnit, Mockito, Tomcat.
+Java 21, Spring Boot v3.3.10 (Web, Validation), JDBC, H2, Maven, Lombok, MapStruct, JUnit, Mockito, Tomcat.
 
 ## Инструкция по развёртыванию и системные требования
 Min CPU/Core: 1/1, RAM:1Gb.
